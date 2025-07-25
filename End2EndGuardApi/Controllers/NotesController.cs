@@ -103,12 +103,7 @@ namespace End2EndGuardApi.Controllers
             if (note == null) return NotFound();
             _context.Notes.Remove(note);
             await _context.SaveChangesAsync();
-            // Return updated notes list for the user
-            var notes = await _context.Notes
-                .Where(n => n.UserId == userId)
-                .Include(n => n.Versions)
-                .ToListAsync();
-            return Ok(notes);
+            return NoContent();
         }
         // Utility to decrypt the ID if it's encrypted (base64), otherwise parse as int
         private int DecryptIdIfNeeded(string id)
