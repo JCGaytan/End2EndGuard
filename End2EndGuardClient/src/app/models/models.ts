@@ -7,7 +7,7 @@
  * User login request payload.
  */
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -17,15 +17,15 @@ export interface LoginRequest {
 export interface LoginResponse {
   /** JWT token for authenticating subsequent requests */
   token: string;
-  /** User's email address */
-  email: string;
+  /** User's username */
+  username: string;
 }
 
 /**
  * User registration request payload.
  */
 export interface RegisterRequest {
-  email: string;
+  username: string;
   password: string;
 }
 

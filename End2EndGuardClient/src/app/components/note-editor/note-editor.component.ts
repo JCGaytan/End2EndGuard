@@ -193,7 +193,7 @@ export class NoteEditorComponent implements OnInit {
     const formValue = this.noteForm.value;
     this.saving = true;
     this.error = '';
-    
+    console.log('[NoteEditor] Save called. isEditing:', this.isEditing, 'noteId:', this.noteId, 'formValue:', formValue);
     if (this.isEditing && this.noteId) {
       // Update existing note
       const updateRequest = {
@@ -201,35 +201,34 @@ export class NoteEditorComponent implements OnInit {
         title: formValue.title,
         content: formValue.content
       };
-      
+      console.log('[NoteEditor] Sending updateNote request:', updateRequest);
       this.apiService.updateNote(updateRequest).subscribe({
-        next: () => {
+        next: (res) => {
           this.saving = false;
-          // Navigate back to notes list after successful update
-          this.router.navigate(['/notes']).then(() => {
-            this.cdRef.detectChanges();
-          });
+          console.log('[NoteEditor] Note updated successfully. Response:', res);
+          // Reload the page to refresh notes
+          window.location.href = '/notes';
         },
         error: (error: any) => {
           this.saving = false;
           this.error = 'Failed to update note';
-          console.error('Error updating note:', error);
+          console.error('[NoteEditor] Error updating note:', error);
         }
       });
     } else {
       // Create new note
+      console.log('[NoteEditor] Sending createNote request:', formValue);
       this.apiService.createNote(formValue).subscribe({
-        next: () => {
+        next: (res) => {
           this.saving = false;
-          // Navigate back to notes list after successful creation
-          this.router.navigate(['/notes']).then(() => {
-            this.cdRef.detectChanges();
-          });
+          console.log('[NoteEditor] Note created successfully. Response:', res);
+          // Reload the page to refresh notes
+          window.location.href = '/notes';
         },
         error: (error: any) => {
           this.saving = false;
           this.error = 'Failed to create note';
-          console.error('Error creating note:', error);
+          console.error('[NoteEditor] Error creating note:', error);
         }
       });
     }

@@ -35,20 +35,20 @@ import { AuthService } from '../../services/auth.service';
           </div>
           
           <div class="rounded-md shadow-sm -space-y-px">
-            <!-- Email input field -->
+            <!-- Username input field -->
             <div>
-              <label for="email" class="sr-only">Email address</label>
+              <label for="username" class="sr-only">Username</label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                formControlName="email"
+                id="username"
+                name="username"
+                type="text"
+                formControlName="username"
                 required
                 class="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                placeholder="Username"
               />
-              <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="mt-1 text-sm text-red-600">
-                Valid email is required
+              <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="mt-1 text-sm text-red-600">
+                Username is required
               </div>
             </div>
             <!-- Password input field -->
@@ -104,7 +104,7 @@ export class LoginComponent {
   ) {
     // Initialize reactive form with validation rules
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -130,7 +130,7 @@ export class LoginComponent {
         error: (error) => {
           // Display user-friendly error message
           this.loading = false;
-          this.error = 'Invalid email or password. Please try again.';
+          this.error = 'Invalid username or password. Please try again.';
           console.error('Login error:', error);
         }
       });

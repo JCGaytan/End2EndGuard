@@ -154,6 +154,14 @@ export class NotesComponent implements OnInit {
   ) {}
 
   /**
+   * Loads/reloads the notes list from the API.
+   * This method ensures proper refresh after CRUD operations.
+   */
+  private loadNotes(): void {
+    this.notes$ = this.apiService.getNotes();
+  }
+
+  /**
    * Component initialization - loads user's notes from the API.
    */
   ngOnInit(): void {
@@ -190,16 +198,18 @@ export class NotesComponent implements OnInit {
    */
   async deleteNote(note: Note): Promise<void> {
     if (confirm(`Are you sure you want to delete "${note.title}"?`)) {
+      console.log('[Notes] Deleting note:', note);
       this.apiService.deleteNote(note.id).subscribe({
-        next: () => {
+        next: (res) => {
           this.error = '';
-          // Refresh the notes list to reflect the deletion
-          this.notes$ = this.apiService.getNotes();
+          console.log('[Notes] Note deleted successfully. Response:', res);
+          // Refresh the notes list in place
+          this.loadNotes();
           this.cdRef.detectChanges();
         },
         error: (error: any) => {
           this.error = 'Failed to delete note';
-          console.error('Error deleting note:', error);
+          console.error('[Notes] Error deleting note:', error);
         }
       });
     }
@@ -210,6 +220,7 @@ export class NotesComponent implements OnInit {
    */
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   /**

@@ -39,20 +39,20 @@ import { ApiService } from '../../services/api.service';
           </div>
           
           <div class="space-y-4">
-            <!-- Email input field -->
+            <!-- Username input field -->
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+              <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                formControlName="email"
+                id="username"
+                name="username"
+                type="text"
+                formControlName="username"
                 required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your email"
+                placeholder="Enter your username"
               />
-              <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="mt-1 text-sm text-red-600">
-                Valid email is required
+              <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="mt-1 text-sm text-red-600">
+                Username is required
               </div>
             </div>
             
@@ -130,7 +130,7 @@ export class RegisterComponent {
   ) {
     // Initialize reactive form with validation rules and custom password matcher
     this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
@@ -161,8 +161,8 @@ export class RegisterComponent {
       this.error = '';
       this.success = '';
 
-      const { email, password } = this.registerForm.value;
-      const credentials = { email, password };
+      const { username, password } = this.registerForm.value;
+      const credentials = { username, password };
 
       this.apiService.register(credentials).subscribe({
         next: () => {
@@ -176,7 +176,7 @@ export class RegisterComponent {
         error: (error) => {
           // Display user-friendly error message
           this.loading = false;
-          this.error = 'Registration failed. Email may already be in use.';
+          this.error = 'Registration failed. Username may already be in use.';
           console.error('Registration error:', error);
         }
       });

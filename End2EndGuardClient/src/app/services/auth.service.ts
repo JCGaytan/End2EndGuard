@@ -25,27 +25,8 @@ export class AuthService {
     if (!isPlatformBrowser(this.platformId)) {
       return false;
     }
-    
     const token = localStorage.getItem('token');
-    if (!token) return false;
-    
-    try {
-      // Parse JWT payload to check expiration
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Math.floor(Date.now() / 1000);
-      
-      // Check if token has expired
-      if (payload.exp && payload.exp < currentTime) {
-        this.logout(); // Auto-logout if token expired
-        return false;
-      }
-      
-      return true;
-    } catch {
-      // Invalid token format
-      this.logout();
-      return false;
-    }
+    return !!token;
   }
 
   /**

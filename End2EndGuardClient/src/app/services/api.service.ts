@@ -89,14 +89,37 @@ export class ApiService {
    */
   private encryptedDelete<T>(endpoint: string): Observable<T> {
     const headers = new HttpHeaders({
+      'Content-Type': 'application/octet-stream',
       'Authorization': `Bearer ${this.getToken()}`
     });
 
-    return this.http.delete<T>(`${this.baseUrl}${endpoint}`, { headers });
+    return this.http.delete(`${this.baseUrl}${endpoint}`, { headers, observe: 'response', responseType: 'arraybuffer' }).pipe(
+      switchMap(async (response: any) => {
+        // If response is empty (204 No Content), return null
+        if (!response.body || response.body.byteLength === 0) {
+          return null as T;
+        }
+        // Try to decrypt if content-type is octet-stream
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/octet-stream')) {
+          const decrypted = await this.encryptionService.decrypt(response.body as ArrayBuffer);
+          return JSON.parse(decrypted) as T;
+        } else {
+          // Fallback for plain JSON response
+          const text = new TextDecoder().decode(response.body as ArrayBuffer);
+          try {
+            return JSON.parse(text) as T;
+          } catch {
+            // If not JSON, just return the text
+            return text as unknown as T;
+          }
+        }
+      })
+    );
   }
 
   /**
-   * Authenticates user with email and password.
+   * Authenticates user with username and password.
    * @param credentials - User login credentials
    * @returns Observable containing JWT token and user info
    */
